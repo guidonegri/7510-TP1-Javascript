@@ -24,21 +24,33 @@ var Interpreter = function () {
 
 	this.parseDB = function (db) {
 		let count = 0;
-		for (i = 0; i < db.length; i++) { 
-			if (rule_pattern.test(db[i]) ) {
-				let rule = new Rule("pepe", ["x", "y"]);
-				db_rules.push(rule);
+		for (i = 0; i < db.length; i++) {
+			let item = db[i];
+			if (rule_pattern.test(item) ) {
+				this.parseRule(item)
 				count++;
-			} else if (fact_pattern.test(db[i]) ) {
-				let fact = new Fact("pepe", ["x", "y"]);
-					db_facts.push(fact);
-					count++;			
-				} else {
-					alert(db[i]);
-				}
+			} else if (fact_pattern.test(item) ) {
+				this.parseFact(item);
+				count++;			
+			} else {
+				alert(item);
 			}
+		}
 		if (count != db.length) {console.log("Error in the DB."); return null;}
 		else database = db;
+	}
+	
+	this.parseFact = function (fact_str) {
+		let result = fact_str.match(fact_pattern);
+		let fact = new Fact(result[1], result[2].split(/,\s/));
+		db_facts.push(fact);
+	}
+	
+	this.parseRule = function (rule_str) {
+		let result = rule_str.match(rule_pattern);
+		let rule_facts = result[3].replace(/\),/, '\)-')
+		let rule = new Rule(result[1], result[2].split(/,\s/), rule_facts.split(/-\s/));
+		db_rules.push(rule);
 	}
 
 	this.checkQuery = function (query) {
