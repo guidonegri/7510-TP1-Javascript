@@ -3,7 +3,14 @@ var Fact = function (name, params) {
     this.params = params;
     this.getName = function () { return this.name; }
     this.getParams = function () { return this.params; }
-    this.getParamsCount = function () { return this.params.lenght; }
+    this.compare = function (fact) {
+		if (this.name == fact.getName()){
+			let params_fact = fact.getParams();
+			let is_same = (this.params.length == params_fact.length) && this.params.every( function(element, index) { return element === params_fact[index]; });
+			return is_same;
+		}
+		return false;
+    }
 }
 
 var Rule = function (name, params, facts) {
@@ -67,26 +74,21 @@ var Interpreter = function () {
 
 	this.validQuery = function (query) {
 		  return (query_pattern.test(query))
-		}
+	}
 	
 	this.factQuery = function(query) {
-			for (i = 0; i < db_facts.length; i++){
-				let fact = db_facts[i];
-				if (query.getName() == fact.getName()){
-					let params_query = query.getParams();
-					let params_fact = fact.getParams();
-					let is_same = (params_query.length == params_fact.length) && params_query.every( function(element, index) { return element === params_fact[index]; });
-					if (is_same) return true;
-				}
-			}
-			return false;
-			
+		for (i = 0; i < db_facts.length; i++){
+			let fact = db_facts[i];
+			if (query.compare(fact)) return true;
 		}
+		return false;
+			
+	}
 		
 	this.checkQuery = function (query) {
 		if (! this.validQuery(query)) { return null; }
 		let q = this.parseQuery(query);
-		if (this.factQuery(q)) {return true}
+		if (this.factQuery(q)) return true
 		return false;
 	}
 
