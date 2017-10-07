@@ -84,11 +84,42 @@ var Interpreter = function () {
 		return false;
 			
 	}
+	
+	this.replaceRuleFactWithQueryParams = function(rule_fact, params_db, params_query){
+		for (i = 0; i < params_db.length; i++){
+			aux = rule_fact.replace(params_db[i], params_query[i]);
+			rule_fact = aux;
+		}
+		return rule_fact;
+		
+	}
+	
+	this.ruleQuery = function(query) {
+		let facts_result = [true];
+		for (i = 0; i < db_rules.length; i++){
+			let rule = db_rules[i];
+			if (rule.getName() != query.getName()) continue;
+			let rule_facts = rule.getFacts();
+			for (j = 0; j < rule_facts.length; j++){
+				let fact = rule_facts[j];
+				let replaced_fact = this.replaceRuleFactWithQueryParams(fact, rule.getParams(), query.getParams());
+				let new_query = this.parseQuery(replaced_fact);
+				let fact_result = this.factQuery(new_query);
+				facts_result.push(fact_result);
+			}
+		}
+		if (facts_result.length == 1) return false;
+		let result = facts_result.reduce( function(a, b) { return a * b; } );
+		if (result == 1) return true;
+		return false;
+			
+	}
 		
 	this.checkQuery = function (query) {
 		if (! this.validQuery(query)) { return null; }
 		let q = this.parseQuery(query);
-		if (this.factQuery(q)) return true
+		if (this.factQuery(q)) return true;
+		else if (this.ruleQuery(q)) return true;
 		return false;
 	}
 
