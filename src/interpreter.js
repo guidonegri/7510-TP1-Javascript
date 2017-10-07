@@ -36,12 +36,12 @@ var Interpreter = function () {
 		for (i = 0; i < db.length; i++) {
 			let item = db[i];
 			
-			if (rule_pattern.test(item) ) {
+			if (rule_pattern.test(item)) {
 				let rule = this.parseRule(item)
 				db_rules.push(rule);
 				count++;
 			
-			} else if (fact_pattern.test(item) ) {
+			} else if (fact_pattern.test(item)) {
 				let fact = this.parseFact(item);
 				db_facts.push(fact);
 				count++;			
@@ -109,10 +109,7 @@ var Interpreter = function () {
 			}
 		}
 		if (facts_result.length == 1) return false;
-		let result = facts_result.reduce( function(a, b) { return a * b; } );
-		if (result == 1) return true;
-		return false;
-			
+		return facts_result.reduce( function(a, b) { return a * b; } );			
 	}
 		
 	this.checkQuery = function (query) {
