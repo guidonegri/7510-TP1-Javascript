@@ -66,11 +66,7 @@ describe("Interpreter", function () {
         it('padre(mario, pepe) should be false', function () {
             assert(interpreter.checkQuery('padre(mario, pepe)') === false);
         });
-
-        it('varon should be null', function () {
-            assert(interpreter.checkQuery('varon') === null);
-        });
-                
+               
         // TODO: Add more tests
 
     });

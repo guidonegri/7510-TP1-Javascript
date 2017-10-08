@@ -26,31 +26,26 @@ var Interpreter = function () {
 	var db_facts = [];
 	var db_rules = [];
   
-	//var query_pattern = /(.*)\(([A-Za-z0-9, ]){1,}\)/;
-	var query_pattern = /(.*)\((.*)\)/;
+	var query_pattern = /(.*)\((.*)\)$/;
 	var fact_pattern = /(.*)\((.*)\)\./;
 	var rule_pattern = /(.*)\((.*)\) :- (.*)\./;
 
 	this.parseDB = function (db) {
-		let count = 0;
 		for (i = 0; i < db.length; i++) {
 			let item = db[i];
 			
 			if (rule_pattern.test(item)) {
 				let rule = this.parseRule(item)
 				db_rules.push(rule);
-				count++;
-			
+				
 			} else if (fact_pattern.test(item)) {
 				let fact = this.parseFact(item);
-				db_facts.push(fact);
-				count++;			
+				db_facts.push(fact);			
 			
 			} else {
-				alert(item);
+				throw "Error: wrong database. Line: " + item;
 			}
 		}
-		if (count != db.length) {console.log("Error in the DB."); return null;}
 	}
 	
 	this.parseFact = function (fact_str) {
@@ -113,7 +108,7 @@ var Interpreter = function () {
 	}
 		
 	this.checkQuery = function (query) {
-		if (! this.validQuery(query)) { return null; }
+		if (! this.validQuery(query)) { throw "Error: wrong query." }
 		let q = this.parseQuery(query);
 		if (this.factQuery(q)) return true;
 		else if (this.ruleQuery(q)) return true;
