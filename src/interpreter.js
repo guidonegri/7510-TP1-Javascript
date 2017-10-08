@@ -3,10 +3,10 @@ var Fact = function (name, params) {
     this.params = params;
     this.getName = function () { return this.name; }
     this.getParams = function () { return this.params; }
-    this.compare = function (fact) {
-		if (this.name == fact.getName()){
-			let params_fact = fact.getParams();
-			let is_same = (this.params.length == params_fact.length) && this.params.every( function(element, index) { return element === params_fact[index]; });
+    this.compare = function (query) {
+		if (this.name == query.getName()){
+			let params_query = query.getParams();
+			let is_same = (this.params.length == params_query.length) && this.params.every( function(element, index) { return element === params_query[index]; });
 			return is_same;
 		}
 		return false;
@@ -29,6 +29,10 @@ var Interpreter = function () {
 	var query_pattern = /(.*)\((.*)\)$/;
 	var fact_pattern = /(.*)\((.*)\)\./;
 	var rule_pattern = /(.*)\((.*)\) :- (.*)\./;
+	
+	this.getFacts = function() { return db_facts; }
+	
+	this.getRules = function() { return db_rules; }
 
 	this.parseDB = function (db) {
 		for (i = 0; i < db.length; i++) {
@@ -74,7 +78,7 @@ var Interpreter = function () {
 	this.factQuery = function(query) {
 		for (i = 0; i < db_facts.length; i++){
 			let fact = db_facts[i];
-			if (query.compare(fact)) return true;
+			if (fact.compare(query)) return true;
 		}
 		return false;
 			
